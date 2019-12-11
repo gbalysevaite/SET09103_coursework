@@ -1,9 +1,10 @@
 {% extends "layout-login.html"%}
 {% block content %}
+<div class="content-section">
 	  <form method="POST" action="">
             {{ form.hidden_tag() }}
 	    {{ form.csrf_token }}
-            <fieldset class="content-section">
+            <fieldset class="form-group">
                 <legend class="border-bottom mb-4">Create new account</legend>
                 <div class="form-group">
                     {{ form.name.label(class="form-control-label") }}
@@ -100,15 +101,31 @@
                         {{ form.nokNumber(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
-            </fieldset>
+		 <div class="form-group">
+                    {{ form.stripNo.label(class="form-control-label") }}
+
+                    {% if form.stripNo.errors %}
+                        {{ form.stripNo(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.stripNo.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.stripNo(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+	    </fieldset>
             <div class="form-group">
                 {{ form.submit(class="btn btn-outline-info") }}
             </div>
-        </form>
+	  </form>
     </div>
     <div class="border-top pt-3">
         <small class="text-muted">
             Already Have An Account? <a class="ml-2" href="{{ url_for('login') }}">Sign In</a>
         </small>
     </div>
+	  
 {% endblock content %}

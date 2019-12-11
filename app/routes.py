@@ -1,7 +1,7 @@
-from flask import render_template, url_for, flash, redirect, request
+from flask import  render_template, url_for, flash, redirect, request
 from app import app, db, bcrypt
-from app.forms import SignupForm, LoginForm, UpdateForm, NewGameForm, UpdateGameForm
 from app.models import User, Game
+from app.forms import  SignupForm, LoginForm, UpdateForm, NewGameForm, UpdateGameForm
 from flask_login import login_user, current_user, logout_user, login_required
 
 @app.route('/')
@@ -28,7 +28,7 @@ def newaccount():
     if form.validate_on_submit():
         hashed_pw = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user = User(name=form.name.data, email=form.email.data, password=hashed_pw, 
-                phoneNo=form.phoneNo.data, nokName=form.nokName.data, nokNumber=form.nokNumber.data)
+                phoneNo=form.phoneNo.data, nokName=form.nokName.data, nokNumber=form.nokNumber.data, stripNo=form.stripNo.data)
         db.session.add(user)
         db.session.commit()
         flash('New account created. You can log in now!', 'success')
@@ -56,6 +56,7 @@ def account():
         current_user.phoneNo = form.phoneNo.data
         current_user.nokName = form.nokName.data
         current_user.nokNumber = form.nokNumber.data
+        current_user.stripNo = form.stripNo.data
         db.session.commit()
         flash('Account has been updated', 'success')
         return redirect(url_for('account'))
@@ -65,6 +66,7 @@ def account():
         form.phoneNo.data = current_user.phoneNo
         form.nokName.data = current_user.nokName
         form.nokNumber.data = current_user.nokNumber
+        form.stripNo.data = current_user.stripNo
     return render_template('account.html', title='My account', form=form), 200
 
 @app.route('/games/newgame', methods=['GET', 'POST'])
@@ -121,5 +123,14 @@ def attend(game_id):
     game.players.append(current_user)
     db.session.commit()
     flash('You have been added to the game', 'success')
+    return redirect(url_for('home'))
+
+@app.route('/game/<int:game_id>/leave', methods=['GET', 'POST'])
+@login_required
+def leave(game_id):
+    game = Game.query.get_or_404(game_id)
+    game.players.remove(current_user)
+    db.session.commit()
+    flash('You have been removed from the game', 'success')
     return redirect(url_for('home'))
 

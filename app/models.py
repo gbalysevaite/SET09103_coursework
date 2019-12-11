@@ -20,7 +20,8 @@ class User(db.Model, UserMixin):
     phoneNo = db.Column(db.String(16), nullable=False, unique=False)
     nokName = db.Column(db.String(50), nullable=False)
     nokNumber = db.Column(db.String(16), nullable=False, unique=False)
-    games = db.relationship('Game', secondary=playersAtGame, backref=db.backref('players'), lazy=True)
+    stripNo = db.Column(db.Integer, nullable=True, unique=True)
+    games = db.relationship('Game', secondary=playersAtGame, backref=db.backref('players'), lazy='dynamic')
 
     def __repr__(self):
         return "User {},{}".format(self.name, self.email)

@@ -1,7 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
-from wtforms.fields.html5 import TelField
-from wtforms_components import DateTimeField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from app.models import User, Game
 from flask_login import current_user
@@ -13,11 +11,12 @@ class SignupForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm password', validators=[DataRequired(), EqualTo('password')])
 
-    phoneNo = TelField('Phone number', validators=[DataRequired()])
+    phoneNo = StringField('Phone number', validators=[DataRequired()])
     
     nokName = StringField('Next of kin name', validators=[DataRequired(), Length(min=2, max=50)])
-    nokNumber = TelField('Next of kin phone number', validators=[DataRequired()])
+    nokNumber = StringField('Next of kin phone number', validators=[DataRequired()])
 
+    stripNo = IntegerField('Strip number', validators=[DataRequired()])
     submit = SubmitField('Create account')
     
     #validation that the user with same email doesn't exist
@@ -39,10 +38,12 @@ class UpdateForm(FlaskForm):
     name = StringField('Full name', validators=[DataRequired(), Length(min=2, max=50)])
     email = StringField('Student email', validators=[DataRequired(), Email()])
 
-    phoneNo = TelField('Phone number', validators=[DataRequired()])
+    phoneNo = StringField('Phone number', validators=[DataRequired()])
 
     nokName = StringField('Next of kin name', validators=[DataRequired(), Length(min=2, max=50)])
-    nokNumber = TelField('Next of kin phone number', validators=[DataRequired()])
+    nokNumber = StringField('Next of kin phone number', validators=[DataRequired()])
+
+    stripNo = IntegerField('Strip number')
 
     submit = SubmitField('Update account')
 

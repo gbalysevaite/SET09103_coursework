@@ -1,19 +1,36 @@
 {% extends "layout-login.html" %}
-
 {% block content%}
 
         <article class="media content-section">
           <div class="media-body">
             <h2 class="article-title">{{ game.opposition }}</h2>
-	    <p class="article-content">The next game is agaist the {{ game.opposition }} at {{ game.location }}. The game will happen on {{ game.date }}. The players available for the game: {{ game.player }}</p>
+	    <p class="article-content">The next game is agaist the {{ game.opposition }} at {{ game.location }}. The game will happen on {{ game.date }}. The players available for the game:
+	    <table style="width: 100%">
+		    <tr>
+			    <th>Strip number</th>
+			    <th>Name</th>
+		    </tr>
+		   
+	    	    {% for user in game.players %}
+	    		<tr>
+				<td>{{ user.stripNo }}</td>
+				<td>{{ user.name }}</td>
+			</tr>
+	    	     {% endfor %}
+	    </table>
+	    <p>Result: {{ game.result }}</p>
           </div>
 	  <div>
-		{% if not game.players.get(current_user.id) %}
-		  <a href={{ url_for('attend', game_id=game.id) }}><button type="button" class="btn btn-default">Attend the game</button></a>
-		{% endif %}
+		 {% for player in game.players if player == current_user %}
+			<a href={{ url_for('leave', game_id=game.id) }}><button>Can't play</button></a>
+		   {% else %}
+		  	<a href={{ url_for('attend', game_id=game.id) }}><button>Attend the game</button></a>
+		{% endfor %}
+		
 		<a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('updateGame', game_id=game.id) }}">Update</a>
           	<button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
 	  </div>
+	
 	  </article>
 	  <!-- Modal from https://getbootstrap.com/docs/4.4/components/modal/ -->
   	<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
